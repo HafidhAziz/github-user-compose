@@ -1,4 +1,4 @@
-package com.astro.test.hafidh
+package com.astro.test.hafidh.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
