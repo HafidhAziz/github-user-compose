@@ -14,7 +14,7 @@ class SearchPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, UserResponseData> {
         val currentPage = params.key ?: 1
         return try {
-            val response = apiService.searchUsers(query = query, perPage = PAGE_SIZE)
+            val response = apiService.searchUsers(query = query, perPage = PAGE_SIZE, page = currentPage)
             if (response.items.isNotEmpty()) {
                 LoadResult.Page(
                     data = response.items,

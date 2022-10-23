@@ -1,6 +1,5 @@
 package com.astro.test.hafidh.presentation.list
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
@@ -25,10 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
 import coil.annotation.ExperimentalCoilApi
@@ -38,7 +40,6 @@ import com.astro.test.hafidh.data.model.UserResponseData
 @ExperimentalCoilApi
 @Composable
 fun ListContent(items: LazyPagingItems<UserResponseData>) {
-    Log.d("Error", items.loadState.toString())
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(all = 12.dp),
@@ -47,10 +48,24 @@ fun ListContent(items: LazyPagingItems<UserResponseData>) {
         items(
             items = items,
             key = { user ->
-                user.id ?: 0L
+                user.id ?: (10000000..100000000).random()
             }
         ) { user ->
             user?.let { UserItem(user = it) }
+        }
+        items.apply {
+            item {
+                when {
+                    loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading -> {
+                        LoadingState(
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                    loadState.refresh is LoadState.Error || loadState.append is LoadState.Error -> {
+
+                    }
+                }
+            }
         }
     }
 }
@@ -128,4 +143,34 @@ fun ListContentPreview() {
             score = 10f
         )
     )
+}
+
+@Composable
+private fun EmptyState() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center)
+    ) {
+        Text(
+            text = "Not Found",
+            color = Color.Black,
+            fontSize = MaterialTheme.typography.h5.fontSize
+        )
+    }
+}
+
+@Composable
+private fun LoadingState(modifier: Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center)
+    ) {
+        Text(
+            text = "Loading...",
+            color = Color.Black,
+            fontSize = MaterialTheme.typography.h5.fontSize
+        )
+    }
 }

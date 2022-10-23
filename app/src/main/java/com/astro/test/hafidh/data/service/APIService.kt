@@ -9,6 +9,7 @@ interface APIService {
     @GET("/search/users")
     suspend fun searchUsers(
         @Query("q") query: String,
-        @Query("per_page") perPage: Int
+        @Query("per_page") perPage: Int,
+        @Query("page") page: Int
     ): SearchUsersResultResponse
 }
